@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Intelligence Guidelines</title>
+    <style>
+        :root {
+            --primary-color: #1a4c7c;
+            --secondary-color: #8dc63f;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Note Buyers Tabs Style */
+        .note-buyers-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .note-buyer-tab {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .note-buyer-tab:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .note-buyer-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .buyer-content {
+            display: none;
+            padding: 15px 0;
+        }
+        
+        .buyer-content.active {
+            display: block;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--box-shadow);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .hero {
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 1rem 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .feature-list {
+            margin: 1.5rem 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-item i.checkmark {
+            color: var(--secondary-color);
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        
+        /* Fallback Unicode Checkmark */
+        .feature-item::before {
+            content: '\2714'; /* Unicode for checkmark ✔ */
+            color: var(--secondary-color);
+            font-size: 16px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        
+        /* Hide Unicode checkmark if Font Awesome icon is present */
+        .feature-item i.checkmark + ::before {
+            display: none;
+        }
+        
+        .feature-item span {
+            flex: 1;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .cta-button:hover {
+            background-color: #7ab52e;
+        }
+        
+        /* Updated Chatbot styles */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .chat-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background-color: #7ab52e;
+        }
+        
+        .chat-button span {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .chat-button i {
+            color: white;
+            font-size: 12px;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+        }
+        
+        .chat-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: none;
+        }
+        
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-title i {
+            margin-right: 10px;
+        }
+        
+        .chat-status {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            margin-right: 5px;
+        }
+        
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .chat-body {
+            padding: 15px;
+            height: 280px;
+            overflow-y: auto;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+        
+        .bot-message {
+            background-color: #f1f1f1;
+            border-top-left-radius: 0;
+            color: #333;
+        }
+        
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            border-top-right-radius: 0;
+        }
+        
+        .message-link {
+            color: #9c27b0;
+            text-decoration: underline;
+        }
+        
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid #eee;
+            display: flex;
+        }
+        
+        .chat-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            background-color: #f1f1f1;
+        }
+        
+        .chat-send {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .chat-container {
+                width: 85%;
+                right: 20px;
+                bottom: 80px;
+            }
+            
+            .tab-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                Dominion Loan Intelligence
+            </div>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Guidelines</a>
+                <a href="#">Resources</a>
+                <a href="#">Contact</a>
+                <a href="#">Login</a>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="hero">
+            <h1>Dominion Loan Intelligence</h1>
+            <p>Our proprietary mortgage intelligence platform delivers 24/7 support throughout your lending process. Get instant access to underwriting guidelines, document requirements, and real-time application status updates.</p>
+        </div>
+        
+        <div class="guidelines-section">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="eligibility">Enterprise AI</button>
+                <button class="tab-btn" data-tab="dfs-dscr">DFS DSCR</button>
+                <button class="tab-btn" data-tab="dfs-bridge">DFS Bridge</button>
+                <button class="tab-btn" data-tab="documentation">All Note Buyers</button>
+                <button class="tab-btn" data-tab="rates">Loan Programs</button>
+                <button class="tab-btn" data-tab="process">Document Requirements</button>
+                <button class="tab-btn" data-tab="faq">Support</button>
+            </div>
+            
+            <div id="eligibility" class="tab-content active">
+                <h2>Smart Loan Eligibility Guidelines</h2>
+                <p>Our AI-powered loan eligibility assessment system helps you determine qualification factors quickly and accurately.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-check checkmark"></i>
+                        <span>Smart loan eligibility assessments</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check checkmark"></i>
+                        <span>Instant rate and program matching</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check checkmark"></i>
+                        <span>Real-time document verification</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check checkmark"></i>
+                        <span>Available 24/7 for rapid responses</span>
+                    </div>
+                </div>
+                <a href="#" class="cta-button">Access Loan Intelligence</a>
+            </div>
+            
+            <div id="dfs-dscr" class="tab-content">
+                <h2>DFS DSCR Guidelines</h2>
+                <p>Explore the guidelines for DFS DSCR loan programs tailored to your needs.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span>DFS DSCR Program Overview</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Eligibility Criteria</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Document Requirements</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Application Process</span>
+                    </div>
+                </div>
+                <a href="#" class="cta-button">View DFS DSCR Guidelines</a>
+            </div>
+            
+            <div id="dfs-bridge" class="tab-content">
+                <h2>DFS Bridge Guidelines</h2>
+                <p>Discover the guidelines for DFS Bridge loan programs designed for flexibility.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span>DFS Bridge Program Overview</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Eligibility Criteria</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Document Requirements</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Application Process</span>
+                    </div>
+                </div>
+                <a href="#" class="cta-button">View DFS Bridge Guidelines</a>
+            </div>
+            
+            <div id="documentation" class="tab-content">
+                <h2>All Note Buyers Guide</h2>
+                <p>Access our comprehensive All Note Buyers Guide for information on our loan offerings.</p>
+                
+                <div class="note-buyers-tabs">
+                    <button class="note-buyer-tab active" data-buyer="a">A</button>
+                    <button class="note-buyer-tab" data-buyer="b">B</button>
+                    <button class="note-buyer-tab" data-buyer="c">C</button>
+                    <button class="note-buyer-tab" data-buyer="d">D</button>
+                    <button class="note-buyer-tab" data-buyer="e">E</button>
+                    <button class="note-buyer-tab" data-buyer="f">F</button>
+                    <button class="note-buyer-tab" data-buyer="g">G</button>
+                    <button class="note-buyer-tab" data-buyer="h">H</button>
+                    <button class="note-buyer-tab" data-buyer="i">I</button>
+                    <button class="note-buyer-tab" data-buyer="j">J</button>
+                    <button class="note-buyer-tab" data-buyer="k">K</button>
+                    <button class="note-buyer-tab" data-buyer="l">L</button>
+                    <button class="note-buyer-tab" data-buyer="m">M</button>
+                    <button class="note-buyer-tab" data-buyer="n">N</button>
+                    <button class="note-buyer-tab" data-buyer="o">O</button>
+                    <button class="note-buyer-tab" data-buyer="p">P</button>
+                    <button class="note-buyer-tab" data-buyer="q">Q</button>
+                </div>
+                
+                <div id="buyer-a" class="buyer-content active">
+                    <h3>Blackstone</h3>
+                    <a href="#" class="cta-button">View Blackstone Guidelines</a>
+                </div>
+                
+                <div id="buyer-b" class="buyer-content">
+                    <h3>Bayview</h3>
+                    <a href="#" class="cta-button">View Bayview Guidelines</a>
+                </div>
+                
+                <div id="buyer-c" class="buyer-content">
+                    <h3>Corevest <span style="color: #666; font-size: 0.9em">(Not Currently Using)</span></h3>
+                    <a href="#" class="cta-button">View Corevest Guidelines</a>
+                </div>
+                
+                <div id="buyer-d" class="buyer-content">
+                    <h3>Maxes <span style="color: #666; font-size: 0.9em">(Uses Our Guidelines)</span></h3>
+                    <a href="#" class="cta-button">View Maxes Guidelines</a>
+                </div>
+                
+                <div id="buyer-e" class="buyer-content">
+                    <h3>Onslow</h3>
+                    <a href="#" class="cta-button">View Onslow Guidelines</a>
+                </div>
+                
+                <div id="buyer-f" class="buyer-content">
+                    <h3>Verus</h3>
+                    <a href="#" class="cta-button">View Verus Guidelines</a>
+                </div>
+                
+                <div id="buyer-g" class="buyer-content">
+                    <h3>Deephaven</h3>
+                    <a href="#" class="cta-button">View Deephaven Guidelines</a>
+                </div>
+                
+                <div id="buyer-h" class="buyer-content">
+                    <h3>Colchis</h3>
+                    <a href="#" class="cta-button">View Colchis Guidelines</a>
+                </div>
+                
+                <div id="buyer-i" class="buyer-content">
+                    <h3>Churchill <span style="color: #666; font-size: 0.9em">(Not Using Currently)</span></h3>
+                    <a href="#" class="cta-button">View Churchill Guidelines</a>
+                </div>
+                
+                <div id="buyer-j" class="buyer-content">
+                    <h3>Eresi</h3>
+                    <a href="#" class="cta-button">View Eresi Guidelines</a>
+                </div>
+                
+                <div id="buyer-k" class="buyer-content">
+                    <h3>SG Premier <span style="color: #666; font-size: 0.9em">(Lower Risk/Stronger Borrower)</span></h3>
+                    <a href="#" class="cta-button">View SG Premier Guidelines</a>
+                </div>
+                
+                <div id="buyer-l" class="buyer-content">
+                    <h3>SG Connect <span style="color: #666; font-size: 0.9em">(Higher Risk Tolerance - GA Loans Ineligible)</span></h3>
+                    <a href="#" class="cta-button">View SG Connect Guidelines</a>
+                </div>
+                
+                <div id="buyer-m" class="buyer-content">
+                    <h3>Toorak <span style="color: #666; font-size: 0.9em">(3 Month Seasoning All Refi)</span></h3>
+                    <a href="#" class="cta-button">View Toorak Guidelines</a>
+                </div>
+                
+                <div id="buyer-n" class="buyer-content">
+                    <h3>Acra</h3>
+                    <a href="#" class="cta-button">View Acra Guidelines</a>
+                </div>
+                
+                <div id="buyer-o" class="buyer-content">
+                    <h3>NYMT</h3>
+                    <a href="#" class="cta-button">View NYMT Guidelines</a>
+                </div>
+                
+                <div id="buyer-p" class="buyer-content">
+                    <h3>NQM Lending <span style="color: #666; font-size: 0.9em">(Broker)</span></h3>
+                    <a href="#" class="cta-button">View NQM Lending Guidelines</a>
+                </div>
+                
+                <div id="buyer-q" class="buyer-content">
+                    <h3>American Heritage <span style="color: #666; font-size: 0.9em">(Broker)</span></h3>
+                    <a href="#" class="cta-button">View American Heritage Guidelines</a>
+                </div>
+            </div>
+            
+            <div id="rates" class="tab-content">
+                <h2>Loan Programs</h2>
+                <p>Our instant rate and program matching system helps you find the best options for your investment needs.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span>Rental Loans</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Fix/Flip Loans</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Ground-Up Construction</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Multi Family Bridge</span>
+                    </div>
+                </div>
+                <a href="#" class="cta-button">View Loan Programs</a>
+            </div>
+            
+            <div id="process" class="tab-content">
+                <h2>Application Process</h2>
+                <p>Track application status in real-time with our 24/7 monitoring system.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span>Pre-approval process guidelines</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Underwriting timeline and expectations</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Closing procedures and requirements</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Post-closing follow-up process</span>
+                    </div>
+                </div>
+                <a href="#" class="cta-button">Track Application Status</a>
+            </div>
+            
+            <div id="faq" class="tab-content">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to common questions about our mortgage guidelines and application process.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span>What are the minimum credit score requirements?</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>How long does the approval process typically take?</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>What documentation is required for self-employed borrowers?</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>How do I handle special circumstances like previous foreclosures?</span>
+                    </div>
+                </div>
+                <a href="#" class="cta-button">View All FAQs</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Updated Chatbot Widget with Text and Icon -->
+    <div class="chat-widget">
+        <div class="chat-button" id="chatButton">
+            <i class="fas fa-file"></i>
+            <span>Chat</span>
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-home"></i>
+                    <span>Dominion Loan Intelligence</span>
+                </div>
+                <div class="chat-status">
+                    <div class="status-indicator"></div>
+                    <span>Online</span>
+                </div>
+                <button class="chat-close" id="chatClose">×</button>
+            </div>
+            
+            <div class="chat-body" id="chatBody">
+                <div class="chat-message bot-message">
+                    I notice you're interested in our loan offerings. Would you like to view our <a href="#" class="message-link">All Note Buyers Guide</a>?
+                </div>
+            </div>
+            
+            <div class="chat-footer">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Type your question here...">
+                <button class="chat-send" id="chatSend">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Main Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Note Buyers Tabs functionality
+        const buyerTabs = document.querySelectorAll('.note-buyer-tab');
+        const buyerContents = document.querySelectorAll('.buyer-content');
+        
+        buyerTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const buyerId = tab.getAttribute('data-buyer');
+                
+                buyerTabs.forEach(btn => btn.classList.remove('active'));
+                buyerContents.forEach(content => content.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`buyer-${buyerId}`).classList.add('active');
+            });
+        });
+        
+        // Chatbot functionality
+        const chatButton = document.getElementById('chatButton');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatClose = document.getElementById('chatClose');
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+        const chatBody = document.getElementById('chatBody');
+        
+        chatButton.addEventListener('click', () => {
+            chatContainer.style.display = 'block';
+        });
+        
+        chatClose.addEventListener('click', () => {
+            chatContainer.style.display = 'none';
+        });
+        
+        function sendMessage() {
+            const messageText = chatInput.value.trim();
+            if (messageText !== '') {
+                const userMessage = document.createElement('div');
+                userMessage.className = 'chat-message user-message';
+                userMessage.textContent = messageText;
+                chatBody.appendChild(userMessage);
+                
+                chatInput.value = '';
+                chatBody.scrollTop = chatBody.scrollHeight;
+                
+                setTimeout(() => {
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'chat-message bot-message';
+                    
+                    if (messageText.toLowerCase().includes('rate')) {
+                        botMessage.innerHTML = 'Our current rates vary based on loan type and credit score. Would you like to check our <a href="#" class="message-link">current rate sheet</a>?';
+                    } else if (messageText.toLowerCase().includes('document')) {
+                        botMessage.innerHTML = 'We offer real-time document verification. Check our <a href="#" class="message-link">documentation requirements</a> for more details.';
+                    } else if (messageText.toLowerCase().includes('eligibility') || messageText.toLowerCase().includes('qualify')) {
+                        botMessage.innerHTML = 'We provide smart loan eligibility assessments. Would you like to <a href="#" class="message-link">check eligibility</a> now?';
+                    } else {
+                        botMessage.innerHTML = 'Thank you for your message. How else can I assist you with our mortgage offerings today?';
+                    }
+                    
+                    chatBody.appendChild(botMessage);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }, 1000);
+            }
+        }
+        
+        chatSend.addEventListener('click', sendMessage);
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
